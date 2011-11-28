@@ -55,7 +55,7 @@ use Moo::Role;
 use Getopt::Long::Descriptive;
 use Modern::Perl;
 
-our $VERSION = '0.1';    # VERSION
+our $VERSION = '0.2';    # VERSION
 
 requires 'getopt';
 
@@ -74,6 +74,18 @@ sub new_with_options {
 
     #run getopt
     my @getopt = $class->getopt;
+
+    #extract required
+    my @required;
+    foreach my $r ( @getopt[ 1 .. $#getopt ] ) {
+        my ( $pf, undef, $o ) = @$r;
+        my ($p) = split( /=/, $pf );
+
+        defined $o
+            and push @required, $p
+            and delete $o->{required};
+    }
+
     my ( $opt, $usage )
         = describe_options( @getopt,
         [ 'help', "print usage message and exit" ] );
@@ -86,6 +98,16 @@ sub new_with_options {
         my ($p) = split( /=/, $pf );
         $params{$p} //= $opt->$p;
     }
+
+    my $p_ok = 0;
+    foreach my $p (@required) {
+        unless ( defined $params{$p} ) {
+            print "$p is required\n"
+                and $p_ok++;
+        }
+    }
+
+    print( $usage->text ), exit if $p_ok;
 
     return $class->new(%params);
 }

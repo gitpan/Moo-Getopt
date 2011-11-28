@@ -16,6 +16,8 @@ use Modern::Perl;
 
     package t;
     use Moo;
+    use strict;
+    use warnings;
 
     has 'bool' => ( is => 'rw', );
 
@@ -25,7 +27,7 @@ use Modern::Perl;
         is     => 'rw',
         coerce => sub {
             my ($p) = @_;
-            unless ( ref $p eq 'ARRAY' ) {
+            if ( defined $p && ref $p ne 'ARRAY' ) {
                 my @a = split( /,/, $p );
                 $p = \@a;
             }
@@ -56,5 +58,9 @@ isa_ok( $test->array, 'ARRAY', 'array' );
 is_deeply( $test->array, [ 1, 2, 3 ], 'array contain 1,2,3' );
 isa_ok( $test->z, 'ARRAY', 'z' );
 is_deeply( $test->z, [qw/k g b/], 'z contain k,g,b' );
+
+@ARGV = ();
+my $test2 = t->new_with_options( bool => 1 );
+is( $test->bool, 1, 'Bool ok by passing it in param' );
 
 done_testing;

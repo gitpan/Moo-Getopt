@@ -22,10 +22,10 @@ my %module_build_args = (
   },
   "dist_abstract" => "add easily getopt to Moo module.",
   "dist_author" => [
-    "Geistteufel <geistteufel\@celogeek.fr>"
+    "Celogeek <geistteufel\@yahoo.fr>"
   ],
   "dist_name" => "Moo-Getopt",
-  "dist_version" => "0.1",
+  "dist_version" => "0.2",
   "license" => "perl",
   "module_name" => "Moo::Getopt",
   "recommends" => {},
